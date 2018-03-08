@@ -7,11 +7,15 @@ Installation
 
 1) Download the generator
 
+```
 wget -O weewx-sftp.zip https://github.com/matthewwall/weewx-sftp/archive/master.zip
+```
 
 2) Install the generator
 
+```
 sudo wee_extension --install weewx-sftp.zip
+```
 
 3) Add the generator to the skin configuration
 
@@ -34,6 +38,8 @@ sudo wee_extension --install weewx-sftp.zip
         path = /weewx
 ```
 
-5) Start weewx
+5) Re-start weewx
 
+```
 sudo /etc/init.d/weewx start
+```
