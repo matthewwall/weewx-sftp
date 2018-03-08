@@ -15,11 +15,14 @@ sudo wee_extension --install weewx-sftp.zip
 
 3) Add the generator to the skin configuration
 
+```
 [Generators]
     generator_list = user.sftp.SFTPGenerator
+```
 
 4) Add to the weewx configuration
 
+```
 [StdReport]
     [[SFTP]]
         HTML_ROOT = /var/www/html
@@ -29,6 +32,7 @@ sudo wee_extension --install weewx-sftp.zip
         server = host.example.com
         port = 2222
         path = /weewx
+```
 
 5) Start weewx
 
