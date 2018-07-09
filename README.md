@@ -1,9 +1,30 @@
 # weewx-sftp
 
-Upload data using sftp
+Generator for weewx that uploads data using sftp.  Copy everything from a
+designated local directory to a remote directory, using the sftp protocol.
 
+This generator is intended to be functionally equivalent to the FTP generator
+in weewx, but using a different protocol.
 
-Installation
+The sftp protocol is not the same as the ftps protocol!  The ftps protocol
+is supported by the standard FTP generator in weewx.  This generator uses sftp,
+which requires the pysftp module.
+
+Based on the FTP generator in weewx, with help from the SFTP generator
+implemented by davies-barnard.
+
+## Pre-requisites
+
+This extension requires the `pysftp` python module.  It can be installed using
+the system package manager such as `yum` or `apt`, or using `pip`.  Use the
+appropriate installation method for your operating system and configuration!
+For example, if you use `pip` then you can install it like this:
+
+```
+sudo pip install pysftp
+```
+
+## Installation
 
 1) Download the generator
 
