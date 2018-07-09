@@ -10,10 +10,20 @@ def loader():
 class SFTPInstaller(ExtensionInstaller):
     def __init__(self):
         super(SFTPInstaller, self).__init__(
-            version="0.1",
+            version="0.2",
             name='sftp',
             description='Upload data using the sftp protocol',
             author="Matthew Wall",
             author_email="mwall@users.sourceforge.net",
-            files=[('bin/user', ['bin/user/sftp.py'])]
+            config={
+                'StdReport': {
+                    'sftp': {
+                        'skin': 'sftp',
+                        'user': 'replace_me',
+                        'password': '"replace_me"',
+                        'server': 'replace with the sftp server name',
+                        'port': 2222,
+                        'path': 'replace with the sftp destination path'}}},
+            files=[('bin/user', ['bin/user/sftp.py']),
+                   ('skins/sftp', ['skins/sftp/skin.conf'])]
             )

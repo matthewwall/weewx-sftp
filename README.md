@@ -17,19 +17,11 @@ wget -O weewx-sftp.zip https://github.com/matthewwall/weewx-sftp/archive/master.
 sudo wee_extension --install weewx-sftp.zip
 ```
 
-3) Add the generator to the skin configuration
-
-```
-[Generators]
-    generator_list = user.sftp.SFTPGenerator
-```
-
-4) Add to the weewx configuration
+3) Set the SFTP parameters in the weewx configuration file
 
 ```
 [StdReport]
     [[SFTP]]
-        HTML_ROOT = /var/www/html
         skin = sftp
         user = username
         password = password
@@ -38,7 +30,7 @@ sudo wee_extension --install weewx-sftp.zip
         path = /weewx
 ```
 
-5) Re-start weewx
+4) Re-start weewx
 
 ```
 sudo /etc/init.d/weewx start
