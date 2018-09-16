@@ -25,6 +25,9 @@ import weewx.reportengine
 from weeutil.weeutil import to_bool
 
 
+VERSION = "0.3"
+
+
 def logmsg(level, msg, label):
     if label is None:
         label = 'sftp'
@@ -54,6 +57,9 @@ class SFTPUploader(object):
         self.name = name
         self.max_tries = max_tries
         self.debug = debug
+        logdbg("local_root=%s" % self.local_root)
+        logdbg("remote_root=%s" % self.remote_root)
+        logdbg("server=%s port=%s user=%s" % (server, port, user)
 
     def run(self):
         import pysftp
@@ -201,6 +207,8 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
             local_root = os.path.join(
                 self.config_dict['WEEWX_ROOT'],
                 self.config_dict.get('StdReport', {}).get('HTML_ROOT', 'public_html'))
+
+        logdbg("running SFTPGenerator %s" % VERSION)
 
         try:
             uploader = SFTPUploader(

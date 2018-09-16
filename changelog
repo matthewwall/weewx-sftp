@@ -1,3 +1,6 @@
+0.3 16sep2018
+* fixed python module path bug in default skin.conf
+
 0.2 08jul2018
 * install a skin.conf file too, not just the generator
 * install default values in the weewx config file to make installation easier
