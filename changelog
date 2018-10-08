@@ -1,3 +1,6 @@
+0.4 08oct2018
+* fixed typo in the log info
+
 0.3 16sep2018
 * fixed python module path bug in default skin.conf
 

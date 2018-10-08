@@ -25,7 +25,7 @@ import weewx.reportengine
 from weeutil.weeutil import to_bool
 
 
-VERSION = "0.3"
+VERSION = "0.4"
 
 
 def logmsg(level, msg, label):
@@ -59,7 +59,7 @@ class SFTPUploader(object):
         self.debug = debug
         logdbg("local_root=%s" % self.local_root)
         logdbg("remote_root=%s" % self.remote_root)
-        logdbg("server=%s port=%s user=%s" % (server, port, user)
+        logdbg("server=%s port=%s user=%s" % (server, port, user))
 
     def run(self):
         import pysftp
