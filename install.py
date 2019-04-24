@@ -20,10 +20,11 @@ class SFTPInstaller(ExtensionInstaller):
                     'sftp': {
                         'skin': 'sftp',
                         'user': 'replace_me',
-                        'password': '"replace_me"',
+                        'password': 'replace_me',
                         'server': 'replace with the sftp server name',
-                        'port': 2222,
-                        'path': 'replace with the sftp destination path'}}},
+                        'port': 22,
+                        'path': 'replace with the sftp destination path',
+                        'local_root' : '/var/www/html/weewx'}}},
             files=[('bin/user', ['bin/user/sftp.py']),
                    ('skins/sftp', ['skins/sftp/skin.conf'])]
             )
