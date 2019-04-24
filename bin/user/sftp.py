@@ -215,7 +215,7 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
                 server=self.skin_dict['server'],
                 user=self.skin_dict['user'],
                 password=self.skin_dict['password'],
-                local_root=local_root,
+                local_root=self.skin_dict['local_root'],
                 remote_root=self.skin_dict['path'],
                 port=int(self.skin_dict.get('port', 2222)),
                 name=self.skin_dict.get('REPORT_NAME', 'SFTP'),
