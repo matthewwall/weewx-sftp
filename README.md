@@ -47,8 +47,9 @@ sudo wee_extension --install weewx-sftp.zip
         user = username
         password = password
         server = host.example.com
-        port = 2222
-        path = /weewx
+        port = 22
+        path = weewx    # upload location will be http://www.example.com/weewx
+        local_root = /var/www/html/weewx
 ```
 
 4) Re-start weewx
