@@ -56,3 +56,15 @@ sudo wee_extension --install weewx-sftp.zip
 ```
 sudo /etc/init.d/weewx start
 ```
+
+Options
+
+`user`, `password` - Username and password of the user.  If passord contains a comma or space then enclose it in double quotes.  Required.
+
+`server` - The hostname or IP address of the remote host.  Required.
+ 
+`port` - The port on the remote host.  Default is 22.
+
+`path` - The path to the destination directory on the remote host.  Required.
+
+The local directory is specified using the standard weeWX report options `WEEWX_ROOT` and/or `HTML_ROOT`.  If not specified, they are inherited from the values defined in `StdReport`.

@@ -1,3 +1,7 @@
+0.5 24apr2019
+* update readme
+* default to port 22 instead of 2222
+
 0.4 08oct2018
 * fixed typo in the log info
 

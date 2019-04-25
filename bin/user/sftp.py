@@ -25,7 +25,7 @@ import weewx.reportengine
 from weeutil.weeutil import to_bool
 
 
-VERSION = "0.4"
+VERSION = "0.5"
 
 
 def logmsg(level, msg, label):
@@ -217,7 +217,7 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
                 password=self.skin_dict['password'],
                 local_root=local_root,
                 remote_root=self.skin_dict['path'],
-                port=int(self.skin_dict.get('port', 2222)),
+                port=int(self.skin_dict.get('port', 22)),
                 name=self.skin_dict.get('REPORT_NAME', 'SFTP'),
                 max_tries=int(self.skin_dict.get('max_tries', 3)),
                 debug=int(self.skin_dict.get('debug', 0)))
