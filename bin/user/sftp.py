@@ -15,7 +15,7 @@ Based on the FTP generator in weewx, with help from the SFTP generator
 implemented by davies-barnard.
 """
 
-import cPickle
+from six.moves import cPickle
 import os
 import syslog
 import time
@@ -25,7 +25,7 @@ import weewx.reportengine
 from weeutil.weeutil import to_bool
 
 
-VERSION = "0.5"
+VERSION = "0.6"
 
 
 def logmsg(level, msg, label):
@@ -78,7 +78,7 @@ class SFTPUploader(object):
                                             port=self.port,
                                             cnopts=cnopts)
                     break
-                except pysftp.ConnectionException, e:
+                except pysftp.ConnectionException as e:
                     logerr("connect %s of %s failed: %s" %
                            (cnt + 1, self.max_tries, e))
             else:
@@ -106,7 +106,7 @@ class SFTPUploader(object):
                     for cnt in range(self.max_tries):
                         try:
                             con.put(full_local_path, full_remote_path)
-                        except (OSError, IOError), e:
+                        except (OSError, IOError) as e:
                             loginf("attempt %s of %s failed: %s" %
                                    (cnt + 1, self.max_tries, e))
                         else:
@@ -130,7 +130,7 @@ class SFTPUploader(object):
         """read the time and members of the last upload from local root"""
         tsfile = os.path.join(self.local_root, "#%s.last" % self.name)
         try:
-            with open(tsfile, "r") as f:
+            with open(tsfile, 'rb') as f:
                 timestamp = cPickle.load(f)
                 fileset = cPickle.load(f)
         except (IOError, EOFError, cPickle.PickleError):
@@ -146,10 +146,10 @@ class SFTPUploader(object):
         """save the time and members of the last upload in the local root"""
         tsfile = os.path.join(self.local_root, "#%s.last" % self.name)
         try:
-            with open(tsfile, "w") as f:
+            with open(tsfile, 'wb') as f:
                 cPickle.dump(timestamp, f)
                 cPickle.dump(fileset, f)
-        except IOError, e:
+        except IOError as e:
             loginf("failed to save upload time: %s" % e)
 
     def _make_remote_dir(self, con, remote_dir_path):
@@ -160,7 +160,7 @@ class SFTPUploader(object):
                 if not con.isdir(remote_dir_path):
                     con.mkdir(remote_dir_path)
                 break
-            except OSError, e:
+            except OSError as e:
                 logdbg("create remote directory failed: %s" % e)
         else:
             logdbg("create remote directory failed")
@@ -221,17 +221,17 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
                 name=self.skin_dict.get('REPORT_NAME', 'SFTP'),
                 max_tries=int(self.skin_dict.get('max_tries', 3)),
                 debug=int(self.skin_dict.get('debug', 0)))
-        except KeyError, e:
+        except KeyError as e:
             loginf("upload not possible: missing parameter %s" % e,
                    "sftpgenerator")
             return
-        except ImportError, e:
+        except ImportError as e:
             loginf("upload not possible: %s" % e, "sftpgenerator")
             return
 
         try:
             n = uploader.run()
-        except (), e:
+        except () as e:
             logerr("%s" % e, "sftpgenerator")
             return
 
@@ -271,3 +271,4 @@ if __name__ == '__main__':
     gen = SFTPGenerator(
         config_dict, skin_dict, gen_ts=None, first_run=None, stn_info=None)
     gen.run()
+
