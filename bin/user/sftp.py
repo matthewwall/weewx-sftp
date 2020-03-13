@@ -65,11 +65,14 @@ VERSION = "0.6"
 class SFTPUploader(object):
 
     def __init__(self, server, user, password, local_root, remote_root,
-                 port=2222, name='SFTP', max_tries=3, debug=0):
+                 private_key=None, private_key_pass=None,
+                 port=22, name='SFTP', max_tries=3, debug=0):
         import pysftp
         self.server = server
         self.user = user
         self.password = password
+        self.private_key = private_key
+        self.private_key_pass = private_key_pass
         self.local_root = os.path.normpath(local_root)
         self.remote_root = os.path.normpath(remote_root)
         self.port = port
@@ -95,6 +98,8 @@ class SFTPUploader(object):
                                             username=self.user,
                                             password=self.password,
                                             port=self.port,
+                                            private_key=self.private_key,
+                                            private_key_pass=self.private_key_pass,
                                             cnopts=cnopts)
                     break
                 except pysftp.ConnectionException as e:
@@ -233,7 +238,9 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
             uploader = SFTPUploader(
                 server=self.skin_dict['server'],
                 user=self.skin_dict['user'],
-                password=self.skin_dict['password'],
+                password=self.skin_dict.get('password'),
+                private_key=self.skin_dict.get('private_key'),
+                private_key_pass=self.skin_dict.get('private_key_pass'),
                 local_root=local_root,
                 remote_root=self.skin_dict['path'],
                 port=int(self.skin_dict.get('port', 22)),
