@@ -10,7 +10,7 @@ def loader():
 class SFTPInstaller(ExtensionInstaller):
     def __init__(self):
         super(SFTPInstaller, self).__init__(
-            version="0.5",
+            version="0.6",
             name='sftp',
             description='Upload data using the sftp protocol',
             author="Matthew Wall",

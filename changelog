@@ -1,3 +1,6 @@
+0.6 12mar2020
+* parameterize command-line args for easier direct testing
+
 0.5 24apr2019
 * update readme
 * default to port 22 instead of 2222

@@ -15,32 +15,51 @@ Based on the FTP generator in weewx, with help from the SFTP generator
 implemented by davies-barnard.
 """
 
-import cPickle
 import os
-import syslog
 import time
+
+try:
+    from six.moves import cPickle
+except ImportError:
+    import cPickle
 
 import weewx
 import weewx.reportengine
 from weeutil.weeutil import to_bool
 
+try:
+    import weeutil.logger
+    import logging
+    log = logging.getLogger(__name__)
 
-VERSION = "0.5"
+    def logdbg(msg, label=None):
+        if label is None:
+            label = 'sftp'
+        log.debug("%s: %s" % (label, msg))
+    def loginf(msg, label=None):
+        if label is None:
+            label = 'sftp'
+        log.info("%s: %s" % (label, msg))
+    def logerr(msg, label=None):
+        if label is None:
+            label = 'sftp'
+        log.error("%s: %s" % (label, msg))
+except ImportError:
+    import syslog
+
+    def logmsg(level, msg, label):
+        if label is None:
+            label = 'sftp'
+        syslog.syslog(level, '%s: %s' % (label, msg))
+    def logdbg(msg, label=None):
+        logmsg(syslog.LOG_DEBUG, msg, label)
+    def loginf(msg, label=None):
+        logmsg(syslog.LOG_INFO, msg, label)
+    def logerr(msg, label=None):
+        logmsg(syslog.LOG_ERR, msg, label)
 
 
-def logmsg(level, msg, label):
-    if label is None:
-        label = 'sftp'
-    syslog.syslog(level, '%s: %s' % (label, msg))
-
-def logdbg(msg, label=None):
-    logmsg(syslog.LOG_DEBUG, msg, label)
-
-def loginf(msg, label=None):
-    logmsg(syslog.LOG_INFO, msg, label)
-
-def logerr(msg, label=None):
-    logmsg(syslog.LOG_ERR, msg, label)
+VERSION = "0.6"
 
 
 class SFTPUploader(object):
@@ -78,7 +97,7 @@ class SFTPUploader(object):
                                             port=self.port,
                                             cnopts=cnopts)
                     break
-                except pysftp.ConnectionException, e:
+                except pysftp.ConnectionException as e:
                     logerr("connect %s of %s failed: %s" %
                            (cnt + 1, self.max_tries, e))
             else:
@@ -106,7 +125,7 @@ class SFTPUploader(object):
                     for cnt in range(self.max_tries):
                         try:
                             con.put(full_local_path, full_remote_path)
-                        except (OSError, IOError), e:
+                        except (OSError, IOError) as e:
                             loginf("attempt %s of %s failed: %s" %
                                    (cnt + 1, self.max_tries, e))
                         else:
@@ -149,7 +168,7 @@ class SFTPUploader(object):
             with open(tsfile, "w") as f:
                 cPickle.dump(timestamp, f)
                 cPickle.dump(fileset, f)
-        except IOError, e:
+        except IOError as e:
             loginf("failed to save upload time: %s" % e)
 
     def _make_remote_dir(self, con, remote_dir_path):
@@ -160,7 +179,7 @@ class SFTPUploader(object):
                 if not con.isdir(remote_dir_path):
                     con.mkdir(remote_dir_path)
                 break
-            except OSError, e:
+            except OSError as e:
                 logdbg("create remote directory failed: %s" % e)
         else:
             logdbg("create remote directory failed")
@@ -221,17 +240,17 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
                 name=self.skin_dict.get('REPORT_NAME', 'SFTP'),
                 max_tries=int(self.skin_dict.get('max_tries', 3)),
                 debug=int(self.skin_dict.get('debug', 0)))
-        except KeyError, e:
+        except KeyError as e:
             loginf("upload not possible: missing parameter %s" % e,
                    "sftpgenerator")
             return
-        except ImportError, e:
+        except ImportError as e:
             loginf("upload not possible: %s" % e, "sftpgenerator")
             return
 
         try:
             n = uploader.run()
-        except (), e:
+        except () as e:
             logerr("%s" % e, "sftpgenerator")
             return
 
@@ -244,29 +263,50 @@ class SFTPGenerator(weewx.reportengine.ReportGenerator):
 # entry point for testing this code
 # PYTHONPATH=bin python bin/user/sftp.py weewx.conf
 if __name__ == '__main__':
+    import configobj
+    import optparse
     import socket
+    parser = optparse.OptionParser()
+    parser.add_option("--config", dest="config_path", metavar="CONFIG_FILE",
+                      default="/home/weewx/weewx.conf",
+                      help="Use configuration file CONFIG_FILE")
+    parser.add_option("--report", default="SFTP",
+                      help="Use the specified report from StdReport")
+    parser.add_option("--debug", action="store_true",
+                      help="Enable verbose logging")
+    (options, args) = parser.parse_args()
 
-    DEBUG = 0
+    debug = 0
+    if options.debug:
+        weewx.debug = 1
+        debug = 1
 
-    weewx.debug = DEBUG
-    syslog.openlog('wee_sftp', syslog.LOG_PID | syslog.LOG_CONS)
-    if DEBUG:
-        syslog.setlogmask(syslog.LOG_UPTO(syslog.LOG_DEBUG))
-    else:
-        syslog.setlogmask(syslog.LOG_UPTO(syslog.LOG_INFO))
+    cfg = dict()
+    try:
+        cfg = configobj.ConfigObj(options.config_path)
+    except IOError:
+        pass
 
+    stdrep = cfg.get('StdReport', {})
+    skin = stdrep.get(options.report, {})
     config_dict = {
-        'WEEWX_ROOT': '/var/www/html',
-        'StdReport': { 'HTML_ROOT': 'fab' }
+        'WEEWX_ROOT': cfg.get('WEEWX_ROOT', '/home/weewx'),
+        'StdReport': {
+            'HTML_ROOT': stdrep.get('HTML_ROOT', '/var/www/html')
+            }
         }
     skin_dict = {
-        'server': 'localhost',
-        'user': 'username',
-        'password': 'password',
-        'path': '/pub',
-        'debug': DEBUG,
+        'server': skin.get('server', 'localhost'),
+        'port': skin.get('port', 22),
+        'user': skin.get('user', 'username'),
+        'password': skin.get('password', 'password'),
+        'path': skin.get('path', '/pub'),
+        'debug': skin.get('debug', debug),
         }
 
+    print("connect to %s:%s" % (skin_dict['server'], skin_dict['port']))
+    print("destination: %s" % skin_dict['path'])
+    print("username: %s" % skin_dict['user'])
     socket.setdefaulttimeout(10)
     gen = SFTPGenerator(
         config_dict, skin_dict, gen_ts=None, first_run=None, stn_info=None)
