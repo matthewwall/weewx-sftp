@@ -1,5 +1,6 @@
 0.6 12mar2020
 * parameterize command-line args for easier direct testing
+* added support for private key and private key password
 
 0.5 24apr2019
 * update readme
