@@ -61,6 +61,10 @@ Options
 
 `user`, `password` - Username and password of the user.  If passord contains a comma or space then enclose it in double quotes.  Required.
 
+`private_key` - Specify path to private key file for PKI authentication.
+
+`private_key_pass` - Specify passphrase for private key file, if necessary.
+
 `server` - The hostname or IP address of the remote host.  Required.
  
 `port` - The port on the remote host.  Default is 22.
