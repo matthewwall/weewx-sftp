@@ -1,5 +1,8 @@
 # weewx-sftp
 
+> Copyright 2016-2020 Matthew Wall
+> Distributed under terms of the GPLv3
+
 Generator for weewx that uploads data using sftp.  Copy everything from a
 designated local directory to a remote directory, using the sftp protocol.
 
