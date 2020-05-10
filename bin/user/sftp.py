@@ -154,7 +154,7 @@ class SFTPUploader(object):
         """read the time and members of the last upload from local root"""
         tsfile = os.path.join(self.local_root, "#%s.last" % self.name)
         try:
-            with open(tsfile, "r") as f:
+            with open(tsfile, "rb") as f:
                 timestamp = cPickle.load(f)
                 fileset = cPickle.load(f)
         except (IOError, EOFError, cPickle.PickleError):
@@ -170,7 +170,7 @@ class SFTPUploader(object):
         """save the time and members of the last upload in the local root"""
         tsfile = os.path.join(self.local_root, "#%s.last" % self.name)
         try:
-            with open(tsfile, "w") as f:
+            with open(tsfile, "wb") as f:
                 cPickle.dump(timestamp, f)
                 cPickle.dump(fileset, f)
         except IOError as e:
