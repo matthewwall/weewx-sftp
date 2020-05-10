@@ -59,7 +59,7 @@ sudo wee_extension --install weewx-sftp.zip
 sudo /etc/init.d/weewx start
 ```
 
-Options
+## Options
 
 `user`, `password` - Username and password of the user.  If passord contains a comma or space then enclose it in double quotes.  Required.
 
