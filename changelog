@@ -1,3 +1,6 @@
+0.7 10may2020
+* use binary mode for cPickle to ensure python3 compatibility
+
 0.6 12mar2020
 * parameterize command-line args for easier direct testing
 * added support for private key and private key password

@@ -59,7 +59,7 @@ except ImportError:
         logmsg(syslog.LOG_ERR, msg, label)
 
 
-VERSION = "0.6"
+VERSION = "0.7"
 
 
 class SFTPUploader(object):
